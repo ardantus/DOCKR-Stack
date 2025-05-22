@@ -1,0 +1,27 @@
+stages:
+  - test
+  - seed
+
+variables:
+  APP_ENV: testing
+
+test:
+  stage: test
+  image: php:8.2-cli
+  services:
+    - mysql:8.0
+  script:
+    - apt-get update && apt-get install -y unzip git libzip-dev libonig-dev libpng-dev
+    - docker-php-ext-install pdo pdo_mysql zip mbstring
+    - curl -sS https://getcomposer.org/installer | php
+    - php composer.phar install
+    - cp .env.example .env
+    - php artisan key:generate
+    - php artisan migrate --force
+    - php artisan test
+
+seed:
+  stage: seed
+  image: php:8.2-cli
+  script:
+    - php artisan db:seed
