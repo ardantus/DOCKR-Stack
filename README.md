@@ -14,15 +14,12 @@ This stack includes:
 
 
 ##  Access URLs
-Web: http://localhost
 
-Mailpit: http://localhost:8025
-
-phpMyAdmin: http://localhost:8080
-
-MinIO: http://localhost:9000 (default user/pass: minioadmin)
-
-Ngrok: https://dashboard.ngrok.com
+- **Web:** [http://localhost:8081](http://localhost:8081)
+- **Mailpit:** [http://localhost:8025](http://localhost:8025)
+- **phpMyAdmin:** [http://localhost:8080](http://localhost:8080)
+- **MinIO:** [http://localhost:9000](http://localhost:9000) (default user/pass: `minioadmin`)
+- **Ngrok:** [https://dashboard.ngrok.com](https://dashboard.ngrok.com)
 
 
 ## 🔧 Configuration Notes

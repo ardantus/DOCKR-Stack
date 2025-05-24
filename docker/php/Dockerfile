@@ -18,18 +18,36 @@ RUN apk add --no-cache \
     icu-dev \
     oniguruma-dev \
     openssl \
-    git
+    git \
+    libxml2-dev \
+    libxslt-dev
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql zip intl mbstring gd
+RUN docker-php-ext-install \
+    pdo \
+    pdo_mysql \
+    zip \
+    intl \
+    mbstring \
+    gd \
+    bcmath \
+    calendar \
+    sockets \
+    xsl
 
 # Install Xdebug
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 
-# Copy custom php.ini configuration
+# Install Composer by copying from official Composer image
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copy custom configurations
 COPY conf.d/custom.ini /usr/local/etc/php/conf.d/custom.ini
-# Copy Xdebug config and supervisor config
 COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 COPY supervisord.conf /etc/supervisord.conf
 
+# Set working directory
+WORKDIR /var/www/html
+
+# Start supervisor
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
