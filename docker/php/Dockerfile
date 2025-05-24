@@ -1,10 +1,12 @@
 FROM php:8.2-fpm-alpine
 
-# Install required Alpine packages
+# Install required packages + build dependencies
 RUN apk add --no-cache \
     bash \
-    shadow \
+    openssh \
+    git \
     curl \
+    shadow \
     supervisor \
     linux-headers \
     gcc \
@@ -18,11 +20,13 @@ RUN apk add --no-cache \
     icu-dev \
     oniguruma-dev \
     openssl \
-    git \
     libxml2-dev \
-    libxslt-dev
+    libxslt-dev \
+    $PHPIZE_DEPS \
+    php-pear \
+    ca-certificates
 
-# Install PHP extensions
+# Install PHP extensions (built-in)
 RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
@@ -30,18 +34,23 @@ RUN docker-php-ext-install \
     intl \
     mbstring \
     gd \
+    exif \
+    mysqli \
+    xml \
+    opcache \
     bcmath \
     calendar \
     sockets \
     xsl
 
-# Install Xdebug
-RUN pecl install xdebug && docker-php-ext-enable xdebug
+# Install Redis & Xdebug via PECL
+RUN pecl install redis xdebug \
+    && docker-php-ext-enable redis xdebug
 
-# Install Composer by copying from official Composer image
+# Copy Composer from official image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copy custom configurations
+# Copy custom PHP configurations and Supervisor
 COPY conf.d/custom.ini /usr/local/etc/php/conf.d/custom.ini
 COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 COPY supervisord.conf /etc/supervisord.conf
@@ -49,5 +58,5 @@ COPY supervisord.conf /etc/supervisord.conf
 # Set working directory
 WORKDIR /var/www/html
 
-# Start supervisor
+# Default command
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
