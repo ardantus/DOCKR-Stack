@@ -85,15 +85,6 @@ services:
     networks:
       - laravel
 
-  composer:
-    image: composer:2
-    container_name: composer
-    volumes:
-      - ./src:/app
-    working_dir: /app
-    networks:
-      - laravel
-
   ngrok:
     image: ngrok/ngrok:latest
     container_name: ngrok
