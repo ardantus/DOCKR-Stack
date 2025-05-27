@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: nginx:alpine
+    image: openresty/openresty:alpine
     container_name: nginx
     ports:
       - "8081:80"
@@ -9,6 +9,8 @@ services:
       - ./src:/var/www/html
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
       - ./docker/nginx/certs:/etc/nginx/certs
+      - ./docker/nginx/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
+      - ./docker/nginx/waf:/etc/nginx/waf
     depends_on:
       - php
     networks:
