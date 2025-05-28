@@ -29,16 +29,20 @@ services:
     image: mysql:8.0
     container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: app_db
-      MYSQL_USER: app_user
-      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
     networks:
       - laravel
+    healthcheck:
+       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
+       timeout: 20s
+       retries: 10
 
   redis:
     image: redis:alpine
@@ -47,7 +51,7 @@ services:
       - laravel
 
   mailpit:
-    image: axllent/mailpit
+    image: axllent/mailpit:${MAILPIT_VERSION}
     container_name: mailpit
     ports:
       - "8025:8025"
@@ -55,12 +59,12 @@ services:
       - laravel
 
   minio:
-    image: minio/minio
+    image: minio/minio:${MINIO_VERSION}
     container_name: minio
     command: server /data --console-address ":9001"
     environment:
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -70,7 +74,7 @@ services:
       - laravel
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin:fpm-alpine
     container_name: phpmyadmin
     environment:
       PMA_HOST: mysql
@@ -88,11 +92,11 @@ services:
       - laravel
 
   ngrok:
-    image: ngrok/ngrok:latest
+    image: ngrok/ngrok:${NGROK_VERSION}
     container_name: ngrok
     command: http nginx:80
     environment:
-      NGROK_AUTHTOKEN: "tokennya"
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
     networks:
       - laravel
 
