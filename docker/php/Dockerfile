@@ -33,13 +33,12 @@ RUN apk add --no-cache \
     libmemcached-dev \
     libwebp-dev \
     libxpm-dev \
-    libressl-dev \
     tidyhtml-dev \
     gmp-dev \
     sqlite-dev \
     postgresql-dev \
     libevent-dev \
-    libssh2-dev
+    gettext-dev
 
 RUN docker-php-ext-install \
     pdo \
@@ -51,7 +50,6 @@ RUN docker-php-ext-install \
     mbstring \
     gd \
     bz2 \
-    imagick \
     exif \
     mysqli \
     xml \
@@ -79,6 +77,11 @@ RUN pecl install mcrypt memcached \
 # Install Redis & Xdebug via PECL
 RUN pecl install redis xdebug \
     && docker-php-ext-enable redis xdebug
+
+# Install Imagick via PECL
+RUN apk add --no-cache imagemagick-dev \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick
 
 # Copy Composer from official image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
