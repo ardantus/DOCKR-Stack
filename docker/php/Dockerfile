@@ -27,13 +27,31 @@ RUN apk add --no-cache \
     ca-certificates
 
 # Install PHP extensions (built-in)
+RUN apk add --no-cache \
+    imagemagick-dev \
+    libmcrypt-dev \
+    libmemcached-dev \
+    libwebp-dev \
+    libxpm-dev \
+    libressl-dev \
+    tidyhtml-dev \
+    gmp-dev \
+    sqlite-dev \
+    postgresql-dev \
+    libevent-dev \
+    libssh2-dev
+
 RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
+    pdo_pgsql \
+    pdo_sqlite \
     zip \
     intl \
     mbstring \
     gd \
+    bz2 \
+    imagick \
     exif \
     mysqli \
     xml \
@@ -41,7 +59,22 @@ RUN docker-php-ext-install \
     bcmath \
     calendar \
     sockets \
-    xsl
+    xsl \
+    soap \
+    pcntl \
+    sysvmsg \
+    sysvsem \
+    sysvshm \
+    shmop \
+    posix \
+    gmp \
+    tidy \
+    ftp \
+    gettext
+
+# Optional: Install mcrypt and memcached via PECL
+RUN pecl install mcrypt memcached \
+    && docker-php-ext-enable mcrypt memcached
 
 # Install Redis & Xdebug via PECL
 RUN pecl install redis xdebug \
