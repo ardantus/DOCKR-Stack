@@ -11,6 +11,7 @@ services:
       - ./docker/nginx/certs:/etc/nginx/certs
       - ./docker/nginx/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
       - ./docker/nginx/waf:/etc/nginx/waf
+      - ./docker/nginx/logs:/var/log/nginx 
     depends_on:
       - php
     networks:
