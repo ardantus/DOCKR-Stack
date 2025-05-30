@@ -1,4 +1,15 @@
+# .gitignore
+# Abaikan file konfigurasi lokal
 .env
-src/supervisord.log
-src/
+
+# Abaikan semua isi dalam folder public/
+src/public/*
+
+# Tapi tetap jaga folder public/ agar tidak ikut terhapus dari struktur
+!src/public/.gitkeep
+
+# Abaikan file log supervisor
+src/supervisor.log
+
+# Abaikan file log supervisor di dalam folder logs/
 docker/nginx/logs/
